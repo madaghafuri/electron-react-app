@@ -1,7 +1,36 @@
-import Versions from './components/Versions'
-import icons from './assets/icons.svg'
+import Versions from './components/Versions';
+import icons from './assets/icons.svg';
+import { useEffect, useState } from 'react';
+import { on, off, send } from './utils/ipcUtil';
 
 function App(): JSX.Element {
+    const [checking, setChecking] = useState<boolean>(false);
+    const [available, setAvailable] = useState<boolean>(false);
+
+    useEffect(() => {
+        const listenCheckingForUpdate = () => {
+            setChecking((state) => !state);
+        };
+
+        const listenUpdateAvailable = () => {
+            setAvailable(true);
+        };
+
+        const listenUpdateNotAvailable = () => {
+            setAvailable(false);
+        };
+
+        on('checkingForUpdate', listenCheckingForUpdate);
+        on('updateAvailable', listenUpdateAvailable);
+        on('updateNotAvailable', listenUpdateNotAvailable);
+
+        return () => {
+            off('checkingForUpdate', listenCheckingForUpdate);
+            off('updateAvailable', listenUpdateAvailable);
+            off('updateNotAvailable', listenUpdateNotAvailable);
+        };
+    }, []);
+
     return (
         <div className="container">
             <Versions></Versions>
@@ -43,111 +72,19 @@ function App(): JSX.Element {
                     </a>
                 </div>
             </div>
-
-            <div className="features">
-                <div className="feature-item">
-                    <article>
-                        <h2 className="title">Configuring</h2>
-                        <p className="detail">
-                            Config with <span>electron.vite.config.ts</span> and refer to the{' '}
-                            <a
-                                target="_blank"
-                                href="https://evite.netlify.app/config/"
-                                rel="noopener noreferrer"
-                            >
-                                config guide
-                            </a>
-                            .
-                        </p>
-                    </article>
-                </div>
-                <div className="feature-item">
-                    <article>
-                        <h2 className="title">HMR</h2>
-                        <p className="detail">
-                            Edit <span>src/renderer</span> files to test HMR. See{' '}
-                            <a
-                                target="_blank"
-                                href="https://evite.netlify.app/guide/hmr-in-renderer.html"
-                                rel="noopener noreferrer"
-                            >
-                                docs
-                            </a>
-                            .
-                        </p>
-                    </article>
-                </div>
-                <div className="feature-item">
-                    <article>
-                        <h2 className="title">Hot Reloading</h2>
-                        <p className="detail">
-                            Run{' '}
-                            <span>
-                                {"'"}electron-vite dev --watch{"'"}
-                            </span>{' '}
-                            to enable. See{' '}
-                            <a
-                                target="_blank"
-                                href="https://evite.netlify.app/guide/hot-reloading.html"
-                                rel="noopener noreferrer"
-                            >
-                                docs
-                            </a>
-                            .
-                        </p>
-                    </article>
-                </div>
-                <div className="feature-item">
-                    <article>
-                        <h2 className="title">Debugging</h2>
-                        <p className="detail">
-                            Check out <span>.vscode/launch.json</span>. See{' '}
-                            <a
-                                target="_blank"
-                                href="https://evite.netlify.app/guide/debugging.html"
-                                rel="noopener noreferrer"
-                            >
-                                docs
-                            </a>
-                            .
-                        </p>
-                    </article>
-                </div>
-                <div className="feature-item">
-                    <article>
-                        <h2 className="title">Source Code Protection</h2>
-                        <p className="detail">
-                            Supported via built-in plugin <span>bytecodePlugin</span>. See{' '}
-                            <a
-                                target="_blank"
-                                href="https://evite.netlify.app/guide/source-code-protection.html"
-                                rel="noopener noreferrer"
-                            >
-                                docs
-                            </a>
-                            .
-                        </p>
-                    </article>
-                </div>
-                <div className="feature-item">
-                    <article>
-                        <h2 className="title">Packaging</h2>
-                        <p className="detail">
-                            Use{' '}
-                            <a
-                                target="_blank"
-                                href="https://www.electron.build"
-                                rel="noopener noreferrer"
-                            >
-                                electron-builder
-                            </a>{' '}
-                            and pre-configured to pack your app.
-                        </p>
-                    </article>
-                </div>
+            <div>
+                <button
+                    onClick={() => {
+                        send('checkForUpdate');
+                    }}
+                >
+                    CHECK
+                </button>
             </div>
+            {checking ? <div>CHECKING...</div> : <div>NOT CHECKING</div>}
+            {available ? <div>UPDATE AVAILABLE</div> : <div>NO UPDATE</div>}
         </div>
-    )
+    );
 }
 
-export default App
+export default App;
