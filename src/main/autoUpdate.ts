@@ -2,6 +2,8 @@ import { ipcMain, WebContents } from 'electron';
 import { autoUpdater } from 'electron-updater';
 
 export const updater = (webContent: WebContents) => {
+    autoUpdater.autoDownload = false;
+
     ipcMain.on('checkForUpdate', () => {
         autoUpdater.checkForUpdatesAndNotify();
     });
