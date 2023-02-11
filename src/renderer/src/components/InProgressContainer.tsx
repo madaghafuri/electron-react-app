@@ -1,7 +1,7 @@
 import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core/dist/types';
 import { useDndMonitor } from '@dnd-kit/core';
 import { useState } from 'react';
-import Droppable from './Droppable/Droppable';
+import Droppable from './DragNDrop/Droppable';
 import TaskItem from './Task/TaskItem';
 
 const InProgressContainer = () => {

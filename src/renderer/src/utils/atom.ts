@@ -9,7 +9,9 @@ export type Task = {
 export const taskList: Task[] = [
     { title: 'Go for a walk', id: '1' },
     { title: 'Sweep the floor', id: '2' },
-    { title: 'cook breakfast', id: '3' }
+    { title: 'cook breakfast', id: '3' },
+    { title: 'code some program', id: '4' },
+    { title: 'walk the dog', id: '5' }
 ];
 
 export const activeId = atom<UniqueIdentifier | null>(null);

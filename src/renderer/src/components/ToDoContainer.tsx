@@ -1,24 +1,26 @@
 import { useDndMonitor } from '@dnd-kit/core';
 import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core/dist/types';
 import { useState } from 'react';
-import Droppable from './Droppable/Droppable';
+import { useAtom } from 'jotai';
+import Droppable from './DragNDrop/Droppable';
 import TaskItem from './Task/TaskItem';
+import { activeId, tasks } from '@renderer/utils/atom';
+import { SortableContext } from '@dnd-kit/sortable';
 
 const ToDoContainer = () => {
-    const [parent, setParent] = useState<UniqueIdentifier | null>(null);
-
-    const handleDragEnd = ({ over, active }: DragEndEvent) => {
-        if (over && over.data.current?.accepts.includes(active.data.current?.type)) {
-            setParent(over.id);
-        }
-    };
-
-    useDndMonitor({ onDragEnd: handleDragEnd });
+    const [taskList, setTaskList] = useAtom(tasks);
+    const [activeID, setActiveID] = useAtom(activeId);
 
     return (
-        <Droppable id="toDo" className="bg-slate-700 w-full m-2">
-            {parent === 'toDo' ? <TaskItem id={'lkjasd'} title="TEST" checked={true} /> : null}
-        </Droppable>
+        <div className="flex flex-col w-1/2 h-full">
+            <text>To Do</text>
+            <SortableContext items={taskList}>
+                <Droppable
+                    id="todo"
+                    className="w-full h-full p-2 bg-slate-400 rounded-md"
+                ></Droppable>
+            </SortableContext>
+        </div>
     );
 };
 
