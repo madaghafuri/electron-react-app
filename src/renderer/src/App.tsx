@@ -1,25 +1,19 @@
 import UpdateInfo from './components/Update';
-import { DndContext } from '@dnd-kit/core';
-import ToDoContainer from './components/ToDoContainer';
-import InProgressContainer from './components/InProgressContainer';
-import DoneContainer from './components/DoneContainer';
 import { Provider } from 'jotai/react';
+import DragDropContext from './components/DragNDrop/DragDropContex';
+import NewContainer from './components/NewContainer';
 
 function App(): JSX.Element {
     return (
         <Provider>
-            <DndContext>
-                <div className="container">
-                    <div className="flex flex-row">
-                        <DndContext>
-                            <ToDoContainer />
-                            <InProgressContainer />
-                            <DoneContainer />
-                        </DndContext>
+            <div className="container">
+                <DragDropContext>
+                    <div className="flex flex-row gap-2">
+                        <NewContainer />
                     </div>
-                    <UpdateInfo />
-                </div>
-            </DndContext>
+                </DragDropContext>
+                <UpdateInfo />
+            </div>
         </Provider>
     );
 }
